@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Playlist Creator - by Couse</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Pantalla de Login -->
+        <div id="login-screen" class="screen active">
+            <div class="login-container">
+                <div class="logo-animation">
+                    <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                </div>
+                <h1 class="app-title">Playlist Creator</h1>
+                <p class="app-description">
+                    Crea playlists automáticas con todas las canciones de tus artistas favoritos
+                </p>
+                <button id="login-button" class="btn-primary">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    Conectar con Spotify
+                </button>
+                <p class="login-note">Powered by Spotify API</p>
+            </div>
+        </div>
+
+        <!-- Pantalla de Búsqueda -->
+        <div id="search-screen" class="screen">
+            <div class="header">
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Buscar artistas..."
+                        autocomplete="off"
+                    >
+                    <button id="clear-search" class="clear-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <button id="logout-button" class="btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Salir
+                </button>
+            </div>
+
+            <div id="results-container" class="results-container">
+                <div id="empty-state" class="empty-state">
+                    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <h2>Busca tu artista favorito</h2>
+                    <p>Encuentra artistas para crear playlists automáticas</p>
+                </div>
+
+                <div id="loading-state" class="loading-state hidden">
+                    <div class="spinner"></div>
+                    <p>Buscando...</p>
+                </div>
+
+                <div id="no-results-state" class="empty-state hidden">
+                    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="11" y1="8" x2="11" y2="12"></line>
+                        <line x1="11" y1="16" x2="11.01" y2="16"></line>
+                    </svg>
+                    <h2>No se encontraron resultados</h2>
+                    <p id="no-results-query"></p>
+                </div>
+
+                <div id="artists-list" class="artists-list hidden"></div>
+            </div>
+        </div>
+
+        <!-- Pantalla de Creación -->
+        <div id="creating-screen" class="screen">
+            <div class="creating-container">
+                <div class="creating-animation">
+                    <svg class="rotating-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="12" r="6"></circle>
+                        <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                </div>
+                <h2>Creando playlist...</h2>
+                <p id="creating-artist-name"></p>
+                <p id="creating-progress" class="creating-progress"></p>
+            </div>
+        </div>
+
+        <!-- Pantalla de Éxito -->
+        <div id="success-screen" class="screen">
+            <div class="success-container">
+                <div class="success-animation">
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h2>¡Playlist creada!</h2>
+                <p id="success-playlist-name" class="success-name"></p>
+                <p id="success-tracks-count" class="success-count"></p>
+                
+                <div class="success-actions">
+                    <a id="open-spotify-btn" href="#" target="_blank" class="btn-primary">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Abrir en Spotify
+                    </a>
+                    <button id="create-another-btn" class="btn-outline">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Crear otra playlist
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla de Error -->
+        <div id="error-screen" class="screen">
+            <div class="error-container">
+                <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <h2>Oops...</h2>
+                <p id="error-message" class="error-message"></p>
+                <button id="retry-button" class="btn-primary">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Intentar de nuevo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="spotify-auth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
